@@ -1,4 +1,4 @@
-# ☁️  SSH‑First Reverse Proxy & Programmable Edge
+# ☁️ SSH‑First Reverse Proxy & Programmable Edge
 
 **Cloudless** is a programmable reverse proxy and tunnel manager designed for hackers, developers, and sysadmins who believe the User Experience *is* the Protocol.
 
@@ -87,18 +87,29 @@ For web servers. Tunnels become **ACTIVE** immediately upon connection.
 
 ### 🔌 `tcp@` (Raw TCP)
 For databases, SSH, RDP, or custom TCP protocols.
-**Note:** To prevent port exhaustion, raw tunnels start as **INACTIVE**. You must explicitly activate your fingerprint to open the gates.
 
-1.  **Start Tunnel** (Allocates a random public port):
-    ```bash
-    ssh -R 0:localhost:22 tcp@cloudless.site
-    # Output: Allocated Port: 10022
-    ```
+**🛡️ Security Gate:**
+To prevent port scanning and abuse, Raw Tunnels start as **INACTIVE (Firewalled)** by default.
+The **Consumer** (the person *connecting* to the exposed port) must explicitly authorize their IP address.
 
-2.  **Activate** (In a separate terminal):
-    ```bash
-    ssh activate@cloudless.site
-    ```
+#### 1. Host Side (The Provider)
+Run this on the machine where the service (e.g., SSH server) is running.
+```bash
+# Expose local SSH (22) to a random public port
+ssh -R 0:localhost:22 tcp@cloudless.site
+# Output: Allocated Port: 10022
+```
+
+#### 2. Client Side (The Consumer)
+Run this on your laptop/remote machine before connecting.
+```bash
+# 1. Knock to open the firewall for your current IP
+ssh activate@cloudless.site
+# Output: Success. Your IP is now whitelisted.
+
+# 2. Connect to the service
+ssh -p 10022 user@cloudless.site
+```
 
 ---
 
@@ -112,39 +123,53 @@ Standard SSH (`udp@`) has limitations with UDP (TCP Meltdown) because it convert
 *   IoT Target Device (UDP): `192.168.1.50:5555`
 
 ### Option A: `udp@` (Transport via SSH)
-Use this if you need traffic to pass through the encrypted SSH channel (port 22) to bypass restrictive firewalls. **Kite acts as a local server** (Adapter) that receives the stream from SSH and forwards it to your IoT device.
+Use this if you need traffic to pass through the encrypted SSH channel (port 22) to bypass restrictive corporate firewalls.
 
-**1. Start Kite (The Local Bridge):**
-Run this on your gateway. It listens on TCP 4000 and forwards packets to the IoT target.
+**1. Host Side (The Provider):**
+Start the bridge and the tunnel on your gateway.
 ```bash
-# Syntax: kite -L <ListenTCP>:<TargetHost>:<TargetPort>
+# A. Start Kite Bridge (Adapter)
 ./kite -L 4000:192.168.1.50:5555
-```
 
-**2. Start Tunnel (The Transport):**
-Tell SSH to forward the public port (10000) to your local Kite (4000).
-```bash
+# B. Start SSH Tunnel (Forward Public 10000 -> Local 4000)
 ssh -R 10000:localhost:4000 udp@cloudless.site
 ```
-*(Don't forget to run `ssh activate@...` to open the public gate)*
+
+**2. Client Side (The Consumer):**
+The remote user must unlock access.
+```bash
+# A. Activate Identity
+ssh activate@cloudless.site
+
+# B. Connect
+nc -u cloudless.site 10000
+```
 
 ### Option B: `rawudp@` (Direct High-Speed Transport)
-Use this for **maximum performance** (WireGuard, Video). SSH is used only to negotiate the slot; Kite then connects **directly** to Cloudless via a dedicated TCP tunnel, bypassing SSH overhead.
+Use this for **maximum performance** (WireGuard, Video). SSH is used only to negotiate the slot; Kite then connects **directly** to Cloudless via a dedicated TCP stream, bypassing SSH overhead.
 
-**1. Reserve Slot (SSH):**
-Ask Cloudless for a raw slot on port 10000.
+**1. Host Side (Reserve Slot):**
 ```bash
-# The local address part (192.168...) is informational here.
+# Ask Cloudless for a raw slot
 ssh -R 10000:192.168.1.50:5555 rawudp@cloudless.site
 # Output:
 # > Connect String: cloudless.site:10000:A1B2-SECRET-TOKEN
 ```
 
-**2. Connect Kite (The Tunnel):**
-Copy the connect string and point Kite to your local target.
+**2. Host Side (Connect Bridge):**
+Using the token from step 1:
 ```bash
-# Syntax: kite -r <ConnectString> -l <TargetHost>:<TargetPort>
 ./kite -r cloudless.site:10000:A1B2-SECRET-TOKEN -l 192.168.1.50:5555
+```
+
+**3. Client Side (The Consumer):**
+As always with raw ports, the consumer must knock.
+```bash
+# A. Activate Identity
+ssh activate@cloudless.site
+
+# B. Connect (e.g., WireGuard Endpoint)
+# Endpoint = cloudless.site:10000
 ```
 
 ---
@@ -222,7 +247,7 @@ Why? To stay close to the birthplace of **UNIX** (Bell Labs) and the legendary *
 | `list@` | | List currently active tunnels (RAM). |
 | `status@` | | Show server global status. |
 | `watch@` | | Tail live traffic logs. |
-| `activate@` | | Enable your fingerprint for Raw TCP/UDP. |
+| `activate@` | | Enable your IP for Raw TCP/UDP access. |
 | `put@` | `<domain>` | Upload a JS script (stdin). |
 | `get@` | `<domain>` | Download a JS script (stdout). |
 | `kite@` | | Download the Kite client binaries. |
