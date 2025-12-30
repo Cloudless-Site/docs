@@ -1,4 +1,4 @@
-# ☁️ Cloudless — SSH‑First Reverse Proxy & Programmable Edge
+# ☁️  SSH‑First Reverse Proxy & Programmable Edge
 
 **Cloudless** is a programmable reverse proxy and tunnel manager designed for hackers, developers, and sysadmins who believe the User Experience *is* the Protocol.
 
