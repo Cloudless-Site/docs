@@ -94,10 +94,11 @@ The **Consumer** (the person *connecting* to the exposed port) must explicitly a
 
 #### 1. Host Side (The Provider)
 Run this on the machine where the service (e.g., SSH server) is running.
+**You must specify the public port you want to use.**
+
 ```bash
-# Expose local SSH (22) to a random public port
-ssh -R 0:localhost:22 tcp@cloudless.site
-# Output: Allocated Port: 10022
+# Expose local SSH (22) to public port 10000
+ssh -R 10000:localhost:22 tcp@cloudless.site
 ```
 
 #### 2. Client Side (The Consumer)
@@ -108,7 +109,7 @@ ssh activate@cloudless.site
 # Output: Success. Your IP is now whitelisted.
 
 # 2. Connect to the service
-ssh -p 10022 user@cloudless.site
+ssh -p 10000 user@cloudless.site
 ```
 
 ---
@@ -150,7 +151,7 @@ Use this for **maximum performance** (WireGuard, Video). SSH is used only to neg
 
 **1. Host Side (Reserve Slot):**
 ```bash
-# Ask Cloudless for a raw slot
+# Ask Cloudless for a raw slot on port 10000
 ssh -R 10000:192.168.1.50:5555 rawudp@cloudless.site
 # Output:
 # > Connect String: cloudless.site:10000:A1B2-SECRET-TOKEN
