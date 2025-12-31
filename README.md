@@ -173,10 +173,10 @@ ssh activate@cloudless.site
 # Endpoint = cloudless.site:10000
 ```
 
-#### Security Note
-When using `rawudp@` (Kite Direct Mode), traffic is encapsulated in standard TCP.
-While efficient, the authentication handshake is protected against replay, but the data stream itself is **not encrypted** by Kite.
-**Recommendation:** Always use encrypted protocols (WireGuard, DTLS, QUIC, HTTPS) inside the UDP tunnel. Do not send plaintext sensitive data over raw Kite tunnels.
+### ⚠️ Kite Security Notice
+When using `rawudp@` (Kite Direct Mode), traffic is encapsulated in standard TCP via SSH authentication handshake.
+**CRITICAL:** Cloudless performs an HMAC Challenge-Response handshake to verify identity, but **does not encrypt the payload data** for performance reasons.
+You MUST use encrypted protocols (WireGuard, DTLS, QUIC, HTTPS) inside the tunnel. Do not transmit plaintext sensitive data over Kite tunnels.
 
 ---
 
@@ -256,7 +256,7 @@ Why? To stay close to the birthplace of **UNIX** (Bell Labs) and the legendary *
 | `activate@` | | Enable your IP for Raw TCP/UDP access. |
 | `put@` | `<domain>` | Upload a JS script (stdin). |
 | `get@` | `<domain>` | Download a JS script (stdout). |
-| `kite@` | | Download the Kite client binaries. |
+| `kite@` | | Download the Kite client source and binaries. |
 | `login@` | | Generate Web Dashboard link. |
 
 ---
