@@ -173,6 +173,11 @@ ssh activate@cloudless.site
 # Endpoint = cloudless.site:10000
 ```
 
+#### Security Note
+When using `rawudp@` (Kite Direct Mode), traffic is encapsulated in standard TCP.
+While efficient, the authentication handshake is protected against replay, but the data stream itself is **not encrypted** by Kite.
+**Recommendation:** Always use encrypted protocols (WireGuard, DTLS, QUIC, HTTPS) inside the UDP tunnel. Do not send plaintext sensitive data over raw Kite tunnels.
+
 ---
 
 ## 🧠 Programmable Edge (JavaScript)
