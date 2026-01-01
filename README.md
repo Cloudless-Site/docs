@@ -130,7 +130,13 @@ Use this if you need traffic to pass through the encrypted SSH channel (port 22)
 Start the bridge and the tunnel on your gateway.
 ```bash
 # A. Start Kite Bridge (Adapter)
-./kite -L 4000:192.168.1.50:5555
+# ⚠️ Do NOT put the token directly in the command line (it leaks via process list + shell history).
+# Save it to a file with strict perms:
+printf '%s' 'A1B2-SECRET-TOKEN' > kite.token
+chmod 600 kite.token
+
+# Then run Kite in direct mode:
+./kite -r cloudless.site:10000 -T kite.token -l 192.168.1.50:5555
 
 # B. Start SSH Tunnel (Forward Public 10000 -> Local 4000)
 ssh -R 10000:localhost:4000 udp@cloudless.site
@@ -154,7 +160,8 @@ Use this for **maximum performance** (WireGuard, Video). SSH is used only to neg
 # Ask Cloudless for a raw slot on port 10000
 ssh -R 10000:192.168.1.50:5555 rawudp@cloudless.site
 # Output:
-# > Connect String: cloudless.site:10000:A1B2-SECRET-TOKEN
+# > Connect String: cloudless.site:10000
+# > KITE_TOKEN: A1B2-SECRET-TOKEN
 ```
 
 **2. Host Side (Connect Bridge):**
@@ -174,7 +181,7 @@ ssh activate@cloudless.site
 ```
 
 ### ⚠️ Kite Security Notice
-When using `rawudp@` (Kite Direct Mode), traffic is encapsulated in standard TCP via SSH authentication handshake.
+When using `rawudp@` (Kite Direct Mode), Kite connects to Cloudless over TCP using a one-time token negotiated via SSH.
 **CRITICAL:** Cloudless performs an HMAC Challenge-Response handshake to verify identity, but **does not encrypt the payload data** for performance reasons.
 You MUST use encrypted protocols (WireGuard, DTLS, QUIC, HTTPS) inside the tunnel. Do not transmit plaintext sensitive data over Kite tunnels.
 
