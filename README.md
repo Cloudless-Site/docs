@@ -212,9 +212,9 @@ ssh get@cloudless.site myapp.cloudless.site > backup.js
 
 1. **Encryption**: Cloudless ensures encryption on the Control Plane (SSH) and offers SNI-Routing for HTTPS (end-to-end TLS).
    - For **TCP/UDP**, the transport from your machine to Cloudless is encrypted via SSH.
+   - For **RAW UDP**, the transport from your machine to Cloudless is **not encrypted** ☠️ 
    - Traffic *from* the internet to Cloudless is cleartext (unless the application protocols like HTTPS/WireGuard are used).
    - **Do not** expose unencrypted Admin dashboards (HTTP) via TCP tunnels.
-   - For **RAW UDP**, the transport from your machine to Cloudless is not encrypted ⚠️ ⚠️ ⚠️ .
 
 2. **DNS & Timeouts**: To verify domain ownership, Cloudless queries DNS TXT records.
    - During the `verify@` process or connecting via BYOD (Bring Your Own Domain), ensure your DNS providers respond promptly.
