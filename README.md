@@ -127,13 +127,14 @@ Standard SSH (`udp@`) has limitations with UDP (TCP Meltdown) because it convert
 Use this if you need traffic to pass through the encrypted SSH channel (port 22) to bypass restrictive corporate firewalls.
 
 **1. Host Side (The Provider):**
-Start the bridge and the tunnel on your gateway.
+Start Kite in **SSH Adapter Mode** (no token needed), then create the SSH tunnel.
+
 ```bash
-# 1. Local Bridge
+# A. Start Kite Bridge (Adapter Mode)
+# Listen on Local TCP Port 4000 and forward to your UDP target
 ./kite -L 4000:192.168.1.50:5555
 
-# 2. SSH Tunnel
-# N.B. Il -R espone la porta TCP del bridge (4000) come servizio Cloudless
+# B. Start SSH Tunnel (Forward Public 10000 -> Local 4000)
 ssh -R 10000:localhost:4000 udp@cloudless.site
 ```
 
