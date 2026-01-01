@@ -107,7 +107,7 @@ ssh -R 10000:localhost:22 tcp@cloudless.site
 #### 2. Client Side (The Consumer)
 Run this on your laptop/remote machine before connecting.
 ```bash
-# 1. Knock to open the firewall for your current IP
+# Knock to open the firewall for your current IP
 ssh activate@cloudless.site
 ```
 
@@ -117,7 +117,7 @@ Notes:
 - If you disconnect the original tunnel, the service disappears (and traffic stops).
 
 ```
-# 2. Connect to the service
+# Connect to the service
 ssh -p 10000 user@cloudless.site
 ```
 
@@ -159,7 +159,7 @@ ssh activate@cloudless.site
 nc -u cloudless.site 10000
 ```
 
-### Option B: `rawudp@` (Direct High-Speed Transport)
+### Option B: `rawudp@` (Direct **Uncrypted** High-Speed Transport)
 Use this for **maximum performance** (WireGuard, Video). SSH is used only to negotiate the slot;
 Kite then connects **directly** to Cloudless via a dedicated TCP stream, bypassing SSH overhead;
 traffic from your machine to Cloudless and vice versa is **not encrypted**  ☣️
@@ -220,7 +220,17 @@ ssh get@cloudless.site myapp.cloudless.site > backup.js
 
 ---
 
-## ⚠️ Performance & Security Notice
+## ⚡ Performance & Resource Strategy ("The Guillotine")
+
+Cloudless creates a highly efficient data plane designed to handle thousands of concurrent tunnels on modest hardware. To achieve this, strictly enforces resource discipline:
+
+*   **Zero TIME_WAIT:** We utilize `SO_LINGER=0` (TCP Reset) to terminate connections that time out, violate protocol rules, or when the system is under heavy load.
+*   **Immediate Reclamation:** Unlike standard web servers that may keep sockets in a "dying" state for up to 60 seconds, Cloudless reclaims kernel memory and file descriptors **instantly** upon closure.
+*   **Client Impact:** You may occasionally see `Connection reset by peer` instead of a graceful close. This is intentional behavior to protect the infrastructure availability for all users.
+
+---
+
+## ⚠️  Security Notice
 
 1. **Encryption**: Cloudless ensures encryption on the Control Plane (SSH) and offers SNI-Routing for HTTPS (end-to-end TLS).
    - For **TCP/UDP**, the transport from your machine to Cloudless is encrypted via SSH.
