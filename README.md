@@ -177,7 +177,9 @@ ssh activate@cloudless.site
 # Endpoint = cloudless.site:10000
 ```
 
-### ⚠️ Performance & Security Notice
+---
+
+## ⚠️ Performance & Security Notice
 
 1. **Encryption**: Cloudless ensures encryption on the Control Plane (SSH) and offers SNI-Routing for HTTPS (end-to-end TLS).
    - For **Raw TCP/UDP**, the transport from your machine to Cloudless is encrypted via SSH or Kite.
