@@ -40,6 +40,9 @@ Expose your local server running on port 8443.
 ssh -R myapp.cloudless.site:443:localhost:8443 https@cloudless.site
 ```
 
+Now browse:
+- `https://myapp.example.com/`
+
 ---
 
 ## 🧩 Gadget Domains: The "Instant" Way
@@ -106,7 +109,12 @@ Run this on your laptop/remote machine before connecting.
 ```bash
 # 1. Knock to open the firewall for your current IP
 ssh activate@cloudless.site
-# Output: Success. Your IP is now whitelisted. Type CTRL-C to exit.
+```
+
+Notes:
+- `activate@` also starts a live “watch” stream. Keep it open in a terminal.
+- Activation is **not** per-client-IP allowlisting; it globally flips ACTIVE for your services.
+- If you disconnect the original tunnel, the service disappears (and traffic stops).
 
 # 2. Connect to the service
 ssh -p 10000 user@cloudless.site
