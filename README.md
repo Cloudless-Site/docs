@@ -129,16 +129,11 @@ Use this if you need traffic to pass through the encrypted SSH channel (port 22)
 **1. Host Side (The Provider):**
 Start the bridge and the tunnel on your gateway.
 ```bash
-# A. Start Kite Bridge (Adapter)
-# ⚠️ Do NOT put the token directly in the command line (it leaks via process list + shell history).
-# Save it to a file with strict perms:
-printf '%s' 'A1B2-SECRET-TOKEN' > kite.token
-chmod 600 kite.token
+# 1. Local Bridge
+./kite -L 4000:192.168.1.50:5555
 
-# Then run Kite in direct mode:
-./kite -r cloudless.site:10000 -T kite.token -l 192.168.1.50:5555
-
-# B. Start SSH Tunnel (Forward Public 10000 -> Local 4000)
+# 2. SSH Tunnel
+# N.B. Il -R espone la porta TCP del bridge (4000) come servizio Cloudless
 ssh -R 10000:localhost:4000 udp@cloudless.site
 ```
 
@@ -147,6 +142,8 @@ The remote user must unlock access.
 ```bash
 # A. Activate Identity
 ssh activate@cloudless.site
+# Note: The activate@ command will stream live logs to confirm activation.
+# Keep the terminal open or use Ctrl+C to exit; the authorization persists.
 
 # B. Connect
 nc -u cloudless.site 10000
@@ -180,10 +177,16 @@ ssh activate@cloudless.site
 # Endpoint = cloudless.site:10000
 ```
 
-### ⚠️ Kite Security Notice
-When using `rawudp@` (Kite Direct Mode), Kite connects to Cloudless over TCP using a one-time token negotiated via SSH.
-**CRITICAL:** Cloudless performs an HMAC Challenge-Response handshake to verify identity, but **does not encrypt the payload data** for performance reasons.
-You MUST use encrypted protocols (WireGuard, DTLS, QUIC, HTTPS) inside the tunnel. Do not transmit plaintext sensitive data over Kite tunnels.
+### ⚠️ Performance & Security Notice
+
+1. **Encryption**: Cloudless ensures encryption on the Control Plane (SSH) and offers SNI-Routing for HTTPS (end-to-end TLS).
+   - For **Raw TCP/UDP**, the transport from your machine to Cloudless is encrypted via SSH or Kite.
+   - Traffic *from* the internet to Cloudless is cleartext (unless the application protocols like HTTPS/WireGuard are used).
+   - **Do not** expose unencrypted Admin dashboards (HTTP) via raw TCP tunnels.
+
+2. **DNS & Timeouts**: To verify domain ownership, Cloudless queries DNS TXT records.
+   - During the `verify@` process or connecting via BYOD (Bring Your Own Domain), ensure your DNS providers respond promptly.
+   - Requests pointing to stalled/unreachable DNS servers may be rejected instantly to protect the infrastructure availability.
 
 ---
 
@@ -229,6 +232,12 @@ Generate a one-time magic link to view graphs, active sessions, and usage stats 
 ```bash
 ssh login@cloudless.site
 ```
+
+> **⚠️ Security Warning:**
+> The dashboard link contains a **one-time secure session token**.
+> *   Do not share screenshots of the terminal link.
+> *   Do not send the link via insecure channels.
+> *   Once opened, the token is consumed. To invalidate your session, simply restart your browser (if using Incognito) or wait for it to expire (24h).
 
 ---
 
