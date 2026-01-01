@@ -116,6 +116,7 @@ Notes:
 - Activation is **not** per-client-IP allowlisting; it globally flips ACTIVE for your services.
 - If you disconnect the original tunnel, the service disappears (and traffic stops).
 
+```
 # 2. Connect to the service
 ssh -p 10000 user@cloudless.site
 ```
