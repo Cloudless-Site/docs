@@ -85,11 +85,11 @@ For web servers. Tunnels become **ACTIVE** immediately upon connection.
     ssh -R myapp.cloudless.site:80:localhost:8080 http@cloudless.site
     ```
 
-### 🔌 `tcp@` (Raw TCP)
+### 🔌 `tcp@` (TCP)
 For databases, SSH, RDP, or custom TCP protocols.
 
 **🛡️ Security Gate:**
-To prevent port scanning and abuse, Raw Tunnels start as **INACTIVE (Firewalled)** by default.
+To prevent port scanning and abuse, Tunnels start as **INACTIVE (Firewalled)** by default.
 The **Consumer** (the person *connecting* to the exposed port) must explicitly authorize their IP address.
 
 #### 1. Host Side (The Provider)
@@ -106,7 +106,7 @@ Run this on your laptop/remote machine before connecting.
 ```bash
 # 1. Knock to open the firewall for your current IP
 ssh activate@cloudless.site
-# Output: Success. Your IP is now whitelisted.
+# Output: Success. Your IP is now whitelisted. Type CTRL-C to exit.
 
 # 2. Connect to the service
 ssh -p 10000 user@cloudless.site
@@ -179,19 +179,6 @@ ssh activate@cloudless.site
 
 ---
 
-## ⚠️ Performance & Security Notice
-
-1. **Encryption**: Cloudless ensures encryption on the Control Plane (SSH) and offers SNI-Routing for HTTPS (end-to-end TLS).
-   - For **Raw TCP/UDP**, the transport from your machine to Cloudless is encrypted via SSH or Kite.
-   - Traffic *from* the internet to Cloudless is cleartext (unless the application protocols like HTTPS/WireGuard are used).
-   - **Do not** expose unencrypted Admin dashboards (HTTP) via raw TCP tunnels.
-
-2. **DNS & Timeouts**: To verify domain ownership, Cloudless queries DNS TXT records.
-   - During the `verify@` process or connecting via BYOD (Bring Your Own Domain), ensure your DNS providers respond promptly.
-   - Requests pointing to stalled/unreachable DNS servers may be rejected instantly to protect the infrastructure availability.
-
----
-
 ## 🧠 Programmable Edge (JavaScript)
 
 Upload **QuickJS** scripts to filter traffic, implement firewalls, or log data at the edge.
@@ -218,6 +205,20 @@ cat firewall.js | ssh put@cloudless.site myapp.cloudless.site
 ```bash
 ssh get@cloudless.site myapp.cloudless.site > backup.js
 ```
+
+---
+
+## ⚠️ Performance & Security Notice
+
+1. **Encryption**: Cloudless ensures encryption on the Control Plane (SSH) and offers SNI-Routing for HTTPS (end-to-end TLS).
+   - For **TCP/UDP**, the transport from your machine to Cloudless is encrypted via SSH.
+   - Traffic *from* the internet to Cloudless is cleartext (unless the application protocols like HTTPS/WireGuard are used).
+   - **Do not** expose unencrypted Admin dashboards (HTTP) via TCP tunnels.
+   - For **RAW UDP**, the transport from your machine to Cloudless is not encrypted ⚠️ ⚠️ ⚠️ .
+
+2. **DNS & Timeouts**: To verify domain ownership, Cloudless queries DNS TXT records.
+   - During the `verify@` process or connecting via BYOD (Bring Your Own Domain), ensure your DNS providers respond promptly.
+   - Requests pointing to stalled/unreachable DNS servers may be rejected instantly to protect the infrastructure availability.
 
 ---
 
@@ -271,7 +272,7 @@ Why? To stay close to the birthplace of **UNIX** (Bell Labs) and the legendary *
 | `list@` | | List currently active tunnels (RAM). |
 | `status@` | | Show server global status. |
 | `watch@` | | Tail live traffic logs. |
-| `activate@` | | Enable your IP for Raw TCP/UDP access. |
+| `activate@` | | Enable your IP for TCP/UDP access. |
 | `put@` | `<domain>` | Upload a JS script (stdin). |
 | `get@` | `<domain>` | Download a JS script (stdout). |
 | `kite@` | | Download the Kite client source and binaries. |
