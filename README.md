@@ -151,8 +151,8 @@ nc -u cloudless.site 10000
 
 ### Option B: `rawudp@` (Direct High-Speed Transport)
 Use this for **maximum performance** (WireGuard, Video). SSH is used only to negotiate the slot;
-Kite then connects **directly** to Cloudless via a dedicated TCP stream, bypassing SSH overhead.
-Traffic from your machine to Cloudless and vice versa is not encrypted ☣️ ☣️ ☣️
+Kite then connects **directly** to Cloudless via a dedicated TCP stream, bypassing SSH overhead;
+traffic from your machine to Cloudless and vice versa is **not encrypted**  ☣️
 
 **1. Host Side (Reserve Slot):**
 ```bash
