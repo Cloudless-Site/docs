@@ -244,6 +244,34 @@ Cloudless creates a highly efficient data plane designed to handle thousands of 
 
 ---
 
+## 🌍 DNS Configuration for Custom Domains (BYOD)
+
+If you want to use your own domain (e.g., `vpn.mycompany.com`) instead of a random gadget or a `cloudless.site` subdomain, you must configure your DNS records to point to us **and** prove ownership.
+
+### 1. Route Traffic (CNAME)
+Point your domain to our infrastructure.
+*   **Type:** `CNAME`
+*   **Host:** `vpn` (or `@` for root domain)
+*   **Value:** `cloudless.site`
+
+### 2. Ownership Proof (TXT)
+To prevent domain hijacking, Cloudless verifies that the SSH key establishing the tunnel matches the domain owner. You must add a TXT record containing your **SSH Public Key Fingerprint**.
+
+**Step A: Find your Fingerprint**
+Run this locally:
+```bash
+ssh-keygen -lf ~/.ssh/id_rsa.pub | awk '{print $2}'
+# Output example: SHA256:aB3cD4eF5gH6iJ7kL8mN9oP0qR...
+```
+
+**Step B: Add the DNS Record**
+*   **Type:** `TXT`
+*   **Host:** `vpn` (same as the CNAME)
+*   **Value:** `SHA256:aB3cD4eF5gH6iJ7kL8mN9oP0qR...` (Paste the output from Step A)
+
+> **Note:** Cloudless checks this TXT record **every time** you connect (`ssh -R ...`). If the record is missing or doesn't match your current key, the connection will be rejected.
+```
+
 ## 📊 Monitoring & Dashboard
 
 ### Terminal Watch
