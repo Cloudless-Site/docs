@@ -294,7 +294,7 @@ ssh login@cloudless.site
 
 ---
 
-## 🌍 Infrastructure & Lore
+## 🐧 Infrastructure & Lore
 
 We take our history seriously. The location of our servers is not accidental; it is chosen to channel the energy of the giants who built the foundations of our digital world.
 
