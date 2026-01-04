@@ -304,7 +304,7 @@ To guarantee maximum stability and performance, our core infrastructure is hoste
 This is the holy ground where the legendary **Linus Torvalds** wrote the first versions of the Linux Kernel v0.01 in 1991. We rely on the residual **magical waves** of that area for low latency and high uptime.
 
 ### 🇺🇸 The Sibling: Dynosaurus (Newark, NJ)
-Cloudless has a younger sibling project called : 🦕 **[Dynosaurus](https://www.dynosaurus.site)**.
+Cloudless has a younger sibling project called : **[Dynosaurus](https://www.dynosaurus.site)** 🦕.
 
 Unlike Cloudless, Dynosaurus is hosted near **Newark, NJ (USA)**.
 Why? To stay close to the birthplace of **UNIX** (Bell Labs) and the legendary **Ken Thompson**. It, too, thrives on the historical magical waves of the Bell Labs era.
