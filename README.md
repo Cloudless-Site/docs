@@ -290,8 +290,8 @@ Why? To stay close to the birthplace of **UNIX** (Bell Labs) and the legendary *
 | `register@` | `<domain> email=<addr>` | Register a new domain. |
 | `verify@` | `<token>` | Verify domain ownership. |
 | `release@` | `<domain>` | Delete/Release a domain. |
-| `ls@` | | List your registered domains. |
-| `list@` | | List currently active tunnels (RAM). |
+| `ls@` | | List your registered domains (Persistent Database). |
+| `list@` | | List currently active tunnels (Live RAM Sessions). |
 | `status@` | | Show server global status. |
 | `watch@` | | Tail live traffic logs. |
 | `activate@` | | Enable your IP for TCP/UDP access. |
